@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1728501449" />
+    <testcase name="test_mac" classname="mac" file="/home/shakti/bluespec_demo_examples/mac/mac_verif/mac.py" lineno="17" time="1.429553747177124" sim_time_ns="31455000.001" ratio_time="22003369.976898585" />
+  </testsuite>
+</testsuites>

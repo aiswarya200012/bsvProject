@@ -1,0 +1,22 @@
+=== Generated schedule for mkMult ===
+
+Method schedule
+---------------
+Method: get_inp
+Ready signal: state == 2'd0
+Conflict-free: send_out
+Conflicts: get_inp
+ 
+Method: send_out
+Ready signal: state == 2'd2
+Conflict-free: get_inp, send_out
+ 
+Rule schedule
+-------------
+Rule: rl_compute
+Predicate: state == 2'd1
+Blocking rules: (none)
+ 
+Logical execution order: get_inp, send_out, rl_compute
+
+======================================
