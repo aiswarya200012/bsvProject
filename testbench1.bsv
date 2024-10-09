@@ -20,6 +20,9 @@ rule rl_finish (rg_y < 16 && rg_y != 0);
 	$display ("$ ");
 	let z = m.send_output();
 	$display ("Product = %b", z);
+	$display ("Product = %d", z);
+	let k = m.send_mantissa();
+	$display ("Product = %b", k);
 	rg_y <= rg_y + 1;
 endrule
 endmodule: mkTest_exp
