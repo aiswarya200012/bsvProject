@@ -9,19 +9,19 @@ function Bit#(16) adder_16 (Bit#(16)inp1,Bit#(16)inp2);
 	Bit #(5) temp;
 	Bit #(1) carry;
 	
-	temp = adder_4(inp1[3:0],inp2[3:0],0);
-	result[3:0] = temp[3:0];
-	carry = temp[4];
+	temp          = adder_4(inp1[3:0],inp2[3:0],0);
+	result[3:0]   = temp[3:0];
+	carry         = temp[4];
 	
-	temp = adder_4(inp1[7:4],inp2[7:4],carry);
-	result[7:4] = temp[3:0];
-	carry = temp[4];
+	temp          = adder_4(inp1[7:4],inp2[7:4],carry);
+	result[7:4]   = temp[3:0];
+	carry         = temp[4];
 	
-	temp = adder_4(inp1[11:8],inp2[11:8],carry);
-	result[11:8] = temp[3:0];
-	carry = temp[4];
+	temp          = adder_4(inp1[11:8],inp2[11:8],carry);
+	result[11:8]  = temp[3:0];
+	carry         = temp[4];
 	
-	temp = adder_4(inp1[15:12],inp2[15:12],carry);
+	temp          = adder_4(inp1[15:12],inp2[15:12],carry);
 	result[15:12] = temp[3:0];
 	
 	return result;
@@ -41,19 +41,19 @@ function Bit#(5) adder_4(Bit#(4) a, Bit#(4) b, Bit#(1) c);
 	Bit #(2) temp;
 	Bit #(1) carry;
 	
-	temp = full_adder(a[0],b[0],c);
+	temp      = full_adder(a[0],b[0],c);
 	result[0] = temp[1];
-	carry = temp[0];
+	carry     = temp[0];
 	
-	temp = full_adder(a[1],b[1],carry);
+	temp      = full_adder(a[1],b[1],carry);
 	result[1] = temp[1];
-	carry = temp[0];
+	carry     = temp[0];
 	
-	temp = full_adder(a[2],b[2],carry);
+	temp      = full_adder(a[2],b[2],carry);
 	result[2] = temp[1];
-	carry = temp[0];
+	carry     = temp[0];
 
-	temp = full_adder(a[3],b[3],carry);
+	temp      = full_adder(a[3],b[3],carry);
 	result[3] = temp[1];
 	result[4] = temp[0];
 	
@@ -79,7 +79,7 @@ module mkMult(Multiplier);
 			if (inp_B[0] == 1) begin
 				product <= adder_16(product , d);
 			end
-			d <= d << 1'b1; // Shift d left
+			d     <= d << 1'b1; // Shift d left
 			inp_B <= inp_B >> 1'b1; // Shift inp_B right
 		end
 	endrule: rl_compute
@@ -90,8 +90,8 @@ module mkMult(Multiplier);
 	method Action get_inp(Bit#(8) a, Bit#(8) b) if(state == 0);
 		inp_A <= signExtend(a);
 		inp_B <= signExtend(b);
-		d <= signExtend(a);
-		state<= 1;
+		d     <= signExtend(a);
+		state <= 1;
 	endmethod
 	
 	// METHOD to send product

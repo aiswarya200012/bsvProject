@@ -3,8 +3,48 @@ interface Multiplier;
   method Bit#(32) send_out();
 endinterface
 
+function Bit#(32) adder_32 (Bit#(32)inp1,Bit#(32)inp2);
+	Bit #(32) result;
+	Bit #(5) temp;
+	Bit #(1) carry;
+	
+	temp = adder_4(inp1[3:0],inp2[3:0],0);
+	result[3:0] = temp[3:0];
+	carry = temp[4];
+	
+	temp = adder_4(inp1[7:4],inp2[7:4],carry);
+	result[7:4] = temp[3:0];
+	carry = temp[4];
+	
+	temp = adder_4(inp1[11:8],inp2[11:8],carry);
+	result[11:8] = temp[3:0];
+	carry = temp[4];
+	
+	temp = adder_4(inp1[15:12],inp2[15:12],carry);
+	result[15:12] = temp[3:0];
+	carry = temp[4];
+	
+	temp = adder_4(inp1[19:16],inp2[19:16],carry);
+	result[19:16] = temp[3:0];
+	carry = temp[4];
+	
+	temp = adder_4(inp1[23:20],inp2[23:20],carry);
+	result[23:20] = temp[3:0];
+	carry = temp[4];
+	
+	temp = adder_4(inp1[27:24],inp2[27:24],carry);
+	result[27:24] = temp[3:0];
+	carry = temp[4];
+	
+	temp = adder_4(inp1[31:28],inp2[31:28],carry);
+	result[31:28] = temp[3:0];
 
-function Bit#(16) adder_16 (Bit#(16)inp1,Bit#(16)inp2);
+	
+	return result;
+	
+endfunction: adder_32
+
+function Bit#(16) adder_16 (Bit#(16)inp1, Bit#(16)inp2);
 	Bit #(16) result;
 	Bit #(5) temp;
 	Bit #(1) carry;
@@ -77,8 +117,7 @@ function Bit#(32) mac(Bit#(16) a,Bit#(16) b, Bit#(32) c);
 
 		product_temp = signExtend(product);
 
-		
-		product_temp = product_temp + c;
+		product_temp = adder_32(product_temp , c);
 		
 		return product_temp;
 endfunction: mac

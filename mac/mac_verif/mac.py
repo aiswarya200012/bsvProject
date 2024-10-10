@@ -70,9 +70,16 @@ async def test_mac(dut):
     dut._log.info('Incrementing')
     
     
+    dut.get_inp_a.value = int(File_objectA.readline(),2)
+    dut.get_inp_b.value = int(File_objectB.readline(),2)
+    dut.get_inp_c.value = int(File_objectC.readline(),2)
+    await RisingEdge(dut.CLK)
+    dut.get_inp_a.value = int(File_objectA.readline(),2)
+    dut.get_inp_b.value = int(File_objectB.readline(),2)
+    dut.get_inp_c.value = int(File_objectC.readline(),2)	
     	
     await RisingEdge(dut.CLK)
-    for i in range(0, 1048):
+    for i in range(0, 1047):
     	dut.get_inp_a.value = int(File_objectA.readline(),2)
     	dut.get_inp_b.value = int(File_objectB.readline(),2)
     	dut.get_inp_c.value = int(File_objectC.readline(),2)
@@ -83,8 +90,8 @@ async def test_mac(dut):
     	ini = int(dut.send_out.value)
     	#dut._log.info(f'en {int(dut.EN_get_inp.value)}')
     	dut._log.info(f'output {int(dut.send_out.value)}')
-    	await RisingEdge(dut.CLK)
-    	await RisingEdge(dut.CLK)
+    	#await RisingEdge(dut.CLK)
+    	#await RisingEdge(dut.CLK)
     	await RisingEdge(dut.CLK)
     	counter_out = en*int(File_objectMAC.readline(),2);
     	assert int(counter_out) == int(dut.send_out.value), f'Counter Output Mismatch, Expected = {counter_out} DUT = {int(dut.send_out.value)}'
