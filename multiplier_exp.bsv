@@ -11,8 +11,8 @@ function Bit#(2) full_adder(Bit#(1) a, Bit#(1) b, Bit#(1) c);
 	return {sum,carry};
 endfunction: full_adder
 
-function Bit#(32) adder_32 (Bit#(32)inp1,Bit#(32)inp2);
-	Bit #(32) result;
+function Bit#(33) adder_32 (Bit#(32)inp1,Bit#(32)inp2);
+	Bit #(33) result;
 	Bit #(5) temp;
 	Bit #(1) carry;
 	
@@ -46,7 +46,7 @@ function Bit#(32) adder_32 (Bit#(32)inp1,Bit#(32)inp2);
 	
 	temp          = adder_4(inp1[31:28],inp2[31:28],carry);
 	result[31:28] = temp[3:0];
-
+	result[32] = temp[4];
 	
 	return result;
 	
@@ -129,6 +129,7 @@ function Result exponent_add(Bit#(24) inp_mantissaA, Bit#(24) inp_mantissaB, Bit
 	Bit#(1) signG;
 	Bit#(1) signS;
 	Bit#(1) sign_temp;
+	Bit#(33) mantissa1;
 	
 	Result out;
 
@@ -151,7 +152,7 @@ function Result exponent_add(Bit#(24) inp_mantissaA, Bit#(24) inp_mantissaB, Bit
 	
 	//convert exponents to same power
 	Bit#(8) count = 0;
-	while(exponentG != exponentS && count < 254)begin
+	while(exponentG != exponentS && count < 32)begin
 		exponentS = exponentS + 1;
 		mantissaS = mantissaS >> 1;
 		count     = count + 1;
@@ -161,31 +162,43 @@ function Result exponent_add(Bit#(24) inp_mantissaA, Bit#(24) inp_mantissaB, Bit
 	
 	// compare signs for addition/subtraction of mantissa
 	if      (signG == 0 && signS == 0) begin
-		mantissa  = adder_32(mantissaS , mantissaG);
-		sign_temp = 1'b0;
-	end
-	else if (signG == 1 && signS == 1)begin
-		mantissa  = adder_32(mantissaS , mantissaG);
-		sign_temp = 1'b1;
-	end
-	else if (signG == 0 && signS == 1)begin
-		mantissa  = mantissaG - mantissaS;
+		mantissa1  = adder_32(mantissaS , mantissaG);
 		sign_temp = 1'b0;
 	end
 	else begin
-		mantissa  = mantissaG - mantissaS;
+		mantissa1  = adder_32(mantissaS , mantissaG);
 		sign_temp = 1'b1;
 	end
+	/*
+	else if (signG == 0 && signS == 1)begin
+		mantissa1 = mantissaG - mantissaS;
+		sign_temp = 1'b0;
+	end
+	else begin
+		mantissa1  = mantissaG - mantissaS;
+		sign_temp = 1'b1;
+	end
+	*/
 	
 	// Limit shifts and ensure termination
     Bit #(8) shift_count = 0;
+    
+    if(mantissa1[32] == 1)
+    begin
+    	mantissa = mantissa1[32:1];
+	exponent_temp = exponent_temp  + 1;
+    end
+    else
+    begin
+    	mantissa = mantissa1[31:0];
 	while(mantissa[31] == 0 &&  shift_count<32)
 		begin
 			mantissa      = mantissa << 1;
 			exponent_temp = exponent_temp  - 1;
 			shift_count   = shift_count + 1;
 		end
-		
+	
+	end	
 	// round off
 	Bit#(2) gr = mantissa[7:6];
 	Bit#(1) s  = mantissa[5] | mantissa[4] | mantissa[3] | mantissa[2] | mantissa[1] | mantissa[0];
@@ -259,7 +272,7 @@ function Result exponent_cal(Bit#(8) mantissaB, Bit#(16) d, Bit#(24) mantissaC, 
 		out.exponent_val = inp_exponent;
 	end
 	out.sign_val     = signA^signB;
-	out.exponent_val = out.exponent_val -127;
+	out.exponent_val = out.exponent_val-127;
     mantissa_temp    = {1'b1, out.mantissa_val};
     mac_out          = exponent_add(mantissa_temp,mantissaC,out.exponent_val,inp_exponentc,out.sign_val,signC);
 	
